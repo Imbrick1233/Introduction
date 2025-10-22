@@ -1,10 +1,24 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Im_Brick</title>
+
+<!-- ✅ Discord Embed / Open Graph 메타태그 -->
+<meta property="og:title" content="Im_Brick | 개발자 소개 페이지" />
+<meta property="og:description" content="안녕하세요 👋 브릭입니다. Python을 주로 다루며 개인 프로젝트와 디스코드 봇을 개발합니다." />
+<meta property="og:image" content="https://example.com/og-image.png" /> <!-- ← 썸네일 절대경로 -->
+<meta property="og:url" content="https://example.com/" /> <!-- ← 사이트 주소 -->
+<meta property="og:type" content="website" />
+<meta name="theme-color" content="#1e90ff" />
+
+<!-- ✅ Twitter 카드 대응 -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Im_Brick | 개발자 소개 페이지" />
+<meta name="twitter:description" content="Python과 개발을 좋아하는 브릭의 개인 페이지입니다." />
+<meta name="twitter:image" content="https://example.com/og-image.png" />
+
 <style>
 :root { --icon-color:black; }
 body.dark { --icon-color:white; }
@@ -95,7 +109,6 @@ body.dark { background:#121212; color:#fff; }
 .info-card .value {
   color:#555;
   white-space:pre-line;
-  /* color transition 제거 */
 }
 
 body:not(.dark) .info-card .label,
@@ -150,7 +163,6 @@ body.dark .profile { border-color:#555; }
   width:100%; height:100%;
   z-index:1; pointer-events:none;
 }
-
 </style>
 </head>
 <body>
@@ -198,7 +210,7 @@ body.dark .profile { border-color:#555; }
 </div>
 
 <script>
-// 테마 토글 저장
+// 테마 토글
 const icon = document.getElementById('theme-toggle-icon');
 if(localStorage.getItem('theme')==='dark') document.body.classList.add('dark');
 icon.textContent = document.body.classList.contains('dark')?'☀️':'🌙';
@@ -211,12 +223,27 @@ icon.addEventListener('click', ()=> {
 // 타이핑
 function typeText(el, text, speed=150){
   const chars = Array.from(text); let i=0;
-  el.textContent=''; el.style.borderRight='2px solid #1e90ff'; el.style.animation='blink 0.6s step-start infinite';
-  const timer=setInterval(()=>{ el.textContent+=chars[i]; i++; if(i===chars.length){ clearInterval(timer); setTimeout(()=>{ el.style.borderRight='none'; el.style.animation='none'; },1000); } }, speed);
+  el.textContent='';
+  el.style.borderRight='2px solid #1e90ff';
+  el.style.animation='blink 0.6s step-start infinite';
+  const timer=setInterval(()=>{ 
+    el.textContent+=chars[i]; i++; 
+    if(i===chars.length){ 
+      clearInterval(timer); 
+      setTimeout(()=>{ el.style.borderRight='none'; el.style.animation='none'; },1000); 
+    } 
+  }, speed);
 }
 
 // 카드 애니메이션
-function revealOnScroll(){ document.querySelectorAll('.card').forEach((c,i)=>{ const top=c.getBoundingClientRect().top; if(top<window.innerHeight*0.9){ setTimeout(()=>{ c.classList.add('visible'); }, i*150); } }); }
+function revealOnScroll(){ 
+  document.querySelectorAll('.card').forEach((c,i)=>{
+    const top=c.getBoundingClientRect().top; 
+    if(top<window.innerHeight*0.9){ 
+      setTimeout(()=>{ c.classList.add('visible'); }, i*150); 
+    } 
+  }); 
+}
 
 // 스킬 애니메이션
 function animateSkills(){
@@ -231,7 +258,7 @@ function animateSkills(){
   });
 }
 
-// SVG 외부 불러오기
+// SVG 아이콘 로드
 const iconMap = {
   'python-skill': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
   'js-skill': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg',
@@ -245,22 +272,41 @@ for(const id in iconMap){
     const el=document.getElementById(id);
     el.insertAdjacentHTML('afterbegin',svg);
     const svgEl=el.querySelector('svg');
-    if(svgEl){ svgEl.style.width='24px'; svgEl.style.height='24px'; svgEl.style.fill='var(--icon-color)'; svgEl.style.verticalAlign='middle'; svgEl.style.marginRight='6px'; }
+    if(svgEl){ 
+      svgEl.style.width='24px'; 
+      svgEl.style.height='24px'; 
+      svgEl.style.fill='var(--icon-color)'; 
+      svgEl.style.verticalAlign='middle'; 
+      svgEl.style.marginRight='6px'; 
+    }
   });
 }
 
-// 배경 파티클
-const canvas = document.getElementById('particles'); const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+// 파티클 배경
+const canvas = document.getElementById('particles'); 
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth; 
+canvas.height = window.innerHeight;
 let particles = [];
-for(let i=0;i<100;i++){ particles.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*2+1, dx:(Math.random()-0.5)*0.5, dy:(Math.random()-0.5)*0.5}); }
+for(let i=0;i<100;i++){ 
+  particles.push({
+    x:Math.random()*canvas.width, 
+    y:Math.random()*canvas.height, 
+    r:Math.random()*2+1, 
+    dx:(Math.random()-0.5)*0.5, 
+    dy:(Math.random()-0.5)*0.5
+  }); 
+}
 function animateParticles(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   particles.forEach(p=>{
     p.x+=p.dx; p.y+=p.dy;
     if(p.x<0||p.x>canvas.width)p.dx*=-1;
     if(p.y<0||p.y>canvas.height)p.dy*=-1;
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle='rgba(30,144,255,0.3)'; ctx.fill();
+    ctx.beginPath(); 
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2); 
+    ctx.fillStyle='rgba(30,144,255,0.3)'; 
+    ctx.fill();
   });
   requestAnimationFrame(animateParticles);
 }
@@ -276,7 +322,10 @@ window.addEventListener('DOMContentLoaded', ()=>{
     revealOnScroll(); animateSkills();
   },1000);
 });
-window.addEventListener('resize', ()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
+window.addEventListener('resize', ()=>{ 
+  canvas.width=window.innerWidth; 
+  canvas.height=window.innerHeight; 
+});
 </script>
 </body>
 </html>
