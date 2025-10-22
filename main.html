@@ -1,0 +1,282 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Im_Brick</title>
+<style>
+:root { --icon-color:black; }
+body.dark { --icon-color:white; }
+
+html, body {
+  margin:0; padding:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:#f5f5f5;
+  scroll-behavior:smooth;
+  overflow-x:hidden;
+  transition:background 0.5s, color 0.5s;
+}
+body.dark { background:#121212; color:#fff; }
+
+.window {
+  width:600px; margin:40px auto 100px;
+  background:rgba(255,255,255,0.85);
+  backdrop-filter:blur(12px);
+  border-radius:16px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.2);
+  overflow:hidden;
+  display:flex; flex-direction:column;
+  transform:scale(0); opacity:0;
+  transition:transform 0.5s, opacity 0.5s, background 0.5s;
+  position:relative; z-index:2;
+}
+.window.opened { transform:scale(1); opacity:1; }
+
+.titlebar {
+  height:40px;
+  background:rgba(224,224,224,0.6);
+  display:flex; align-items:center; padding:0 10px;
+  backdrop-filter:blur(10px);
+  transition:background 0.5s;
+}
+.buttons { display:flex; gap:8px; }
+.btn { width:12px; height:12px; border-radius:50%; display:inline-block; pointer-events:none; }
+.close { background:#ff5f57; } .minimize { background:#ffbd2e; } .maximize { background:#28c940; }
+
+.cards {
+  display:flex; flex-direction:column;
+  padding:20px; gap:15px;
+  position:relative; z-index:2;
+}
+.card {
+  background:rgba(255,255,255,0.85);
+  border-radius:14px; padding:18px 22px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.15);
+  opacity:0; transform:translateY(30px) rotateX(10deg);
+  transition:transform 0.7s, opacity 0.7s, box-shadow 0.5s, background 0.5s;
+  position:relative;
+}
+.card.visible { opacity:1; transform:translateY(0) rotateX(0); }
+.card:hover {
+  transform:scale(1.06) translateY(-5px) rotateX(0);
+  box-shadow:0 20px 40px rgba(0,0,0,0.3);
+}
+
+.header-card { display:flex; justify-content:space-between; align-items:center; }
+.header-card h1 {
+  margin:0; font-size:2.4rem; color:#1e90ff;
+  white-space:nowrap; border-right:2px solid #1e90ff;
+  padding-right:5px;
+  text-shadow:0 0 4px rgba(30,144,255,0.5);
+  animation: blink 0.6s step-start infinite;
+}
+@keyframes blink { 50% { border-color:transparent; } }
+
+.profile {
+  width:100px; height:100px; border-radius:50%;
+  border:3px solid #e0e0e0; object-fit:cover;
+  transition:transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+.profile:hover {
+  transform:scale(1.1) rotate(3deg);
+  box-shadow:0 0 30px rgba(30,144,255,0.8);
+}
+
+.section-title {
+  font-size:1.9rem; color:#1e90ff;
+  margin:0 0 5px 0;
+  border-bottom:2px solid #e0e0e0;
+  padding-bottom:5px;
+}
+
+.bio-card p,
+.info-card .label,
+.info-card .value {
+  color:#555;
+  white-space:pre-line;
+  /* color transition 제거 */
+}
+
+body:not(.dark) .info-card .label,
+body:not(.dark) .info-card .value,
+body:not(.dark) .skills-card .skill span,
+body:not(.dark) .projects-card p {
+  color:black !important;
+}
+
+.skill { margin:6px 0; display:flex; align-items:center; gap:8px; cursor:default; }
+.skill svg { width:24px; height:24px; fill:var(--icon-color); transition:fill 0.3s; }
+.skill-bar { flex-grow:1; height:12px; border-radius:6px; background:#ddd; overflow:hidden; }
+.skill-fill {
+  height:100%; border-radius:6px; width:0;
+  transition:width 1.2s ease, background 0.5s;
+  background: linear-gradient(90deg, #a0eaff, #1e90ff);
+  position:relative;
+}
+.skill-fill span { position:absolute; right:6px; top:-22px; font-size:0.8rem; color:#333; }
+
+.projects-card p svg {
+  width:20px; height:20px;
+  vertical-align:middle;
+  margin-right:6px;
+  fill:var(--icon-color);
+  transition:fill 0.3s;
+}
+
+body.dark .window { background:rgba(25,25,25,0.85); }
+body.dark .titlebar { background:rgba(51,51,51,0.85); }
+body.dark .card { background:rgba(40,40,40,0.85); }
+body.dark .header-card h1, body.dark .section-title { color:#1e90ff; }
+body.dark .bio-card p,
+body.dark .info-card .label,
+body.dark .info-card .value,
+body.dark .skills-card .skill span,
+body.dark .projects-card p { color:#fff !important; }
+body.dark .skill-fill { background: linear-gradient(90deg, #4da6ff, #1e90ff); }
+body.dark .skill-fill span { color:#fff; }
+body.dark .profile { border-color:#555; }
+
+#theme-toggle-icon {
+  position:fixed; top:20px; right:20px;
+  font-size:1.6rem; cursor:pointer; z-index:4;
+  user-select:none; transition:transform 0.3s, color 0.3s;
+  color:#000;
+}
+#theme-toggle-icon:hover { transform:scale(1.2); }
+
+#particles {
+  position:fixed; top:0; left:0;
+  width:100%; height:100%;
+  z-index:1; pointer-events:none;
+}
+
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div id="theme-toggle-icon">🌙</div>
+
+<div class="window">
+  <div class="titlebar">
+    <div class="buttons">
+      <span class="btn close"></span>
+      <span class="btn minimize"></span>
+      <span class="btn maximize"></span>
+    </div>
+  </div>
+  <div class="cards">
+    <div class="card header-card">
+      <h1></h1>
+      <img class="profile" src="pfp.png" alt="프로필 이미지">
+    </div>
+    <div class="card bio-card">
+      <h2 class="section-title">소개글</h2>
+      <p>안녕하세요. 브릭입니다.<br>Python을 주로 다룹니다.</p>
+    </div>
+    <div class="card info-card">
+      <h2 class="section-title">내정보</h2>
+      <p><span class="label">이ㅤ름 :</span> <span class="value">브릭</span></p>
+      <p><span class="label">생ㅤ일 :</span> <span class="value">4월 20일</span></p>
+      <p><span class="label">관심사 :</span> <span class="value">게임, 개발</span></p>
+      <p><span class="label">메ㅤ일 :</span> <span class="value">imbrick0420@gmail.com</span></p>
+    </div>
+    <div class="card skills-card">
+      <h2 class="section-title">스킬</h2>
+      <div class="skill" id="python-skill"><span>Python</span><div class="skill-bar"><div class="skill-fill" data-width="80%"><span>0%</span></div></div></div>
+      <div class="skill" id="js-skill"><span>JavaScript</span><div class="skill-bar"><div class="skill-fill" data-width="20%"><span>0%</span></div></div></div>
+      <div class="skill" id="html-skill"><span>HTML/CSS</span><div class="skill-bar"><div class="skill-fill" data-width="40%"><span>0%</span></div></div></div>
+      <div class="skill" id="css-skill"><span>CSS</span><div class="skill-bar"><div class="skill-fill" data-width="40%"><span>0%</span></div></div></div>
+    </div>
+    <div class="card projects-card">
+      <h2 class="section-title">프로젝트</h2>
+      <p id="project1">개인 홈페이지 제작</p>
+      <p id="project2">디스코드 봇 제작</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// 테마 토글 저장
+const icon = document.getElementById('theme-toggle-icon');
+if(localStorage.getItem('theme')==='dark') document.body.classList.add('dark');
+icon.textContent = document.body.classList.contains('dark')?'☀️':'🌙';
+icon.addEventListener('click', ()=> {
+  document.body.classList.toggle('dark');
+  icon.textContent = document.body.classList.contains('dark')?'☀️':'🌙';
+  localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');
+});
+
+// 타이핑
+function typeText(el, text, speed=150){
+  const chars = Array.from(text); let i=0;
+  el.textContent=''; el.style.borderRight='2px solid #1e90ff'; el.style.animation='blink 0.6s step-start infinite';
+  const timer=setInterval(()=>{ el.textContent+=chars[i]; i++; if(i===chars.length){ clearInterval(timer); setTimeout(()=>{ el.style.borderRight='none'; el.style.animation='none'; },1000); } }, speed);
+}
+
+// 카드 애니메이션
+function revealOnScroll(){ document.querySelectorAll('.card').forEach((c,i)=>{ const top=c.getBoundingClientRect().top; if(top<window.innerHeight*0.9){ setTimeout(()=>{ c.classList.add('visible'); }, i*150); } }); }
+
+// 스킬 애니메이션
+function animateSkills(){
+  document.querySelectorAll('.skill-fill').forEach((el,i)=>{
+    let width = el.dataset.width;
+    let span = el.querySelector('span');
+    let val = 0;
+    const timer = setInterval(()=>{
+      if(val>=parseInt(width)){ clearInterval(timer); span.textContent=width; }
+      else { val++; el.style.width=val+'%'; span.textContent=val+'%'; }
+    },12);
+  });
+}
+
+// SVG 외부 불러오기
+const iconMap = {
+  'python-skill': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+  'js-skill': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg',
+  'html-skill': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg',
+  'css-skill': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
+  'project1': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg',
+  'project2': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg'
+};
+for(const id in iconMap){
+  fetch(iconMap[id]).then(res=>res.text()).then(svg=>{
+    const el=document.getElementById(id);
+    el.insertAdjacentHTML('afterbegin',svg);
+    const svgEl=el.querySelector('svg');
+    if(svgEl){ svgEl.style.width='24px'; svgEl.style.height='24px'; svgEl.style.fill='var(--icon-color)'; svgEl.style.verticalAlign='middle'; svgEl.style.marginRight='6px'; }
+  });
+}
+
+// 배경 파티클
+const canvas = document.getElementById('particles'); const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+let particles = [];
+for(let i=0;i<100;i++){ particles.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*2+1, dx:(Math.random()-0.5)*0.5, dy:(Math.random()-0.5)*0.5}); }
+function animateParticles(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach(p=>{
+    p.x+=p.dx; p.y+=p.dy;
+    if(p.x<0||p.x>canvas.width)p.dx*=-1;
+    if(p.y<0||p.y>canvas.height)p.dy*=-1;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle='rgba(30,144,255,0.3)'; ctx.fill();
+  });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// 초기 실행
+window.addEventListener('DOMContentLoaded', ()=>{
+  window.scrollTo(0,0);
+  const win=document.querySelector('.window');
+  setTimeout(()=>{
+    win.classList.add('opened');
+    typeText(document.querySelector('.header-card h1'),'안녕하세요 👋');
+    revealOnScroll(); animateSkills();
+  },1000);
+});
+window.addEventListener('resize', ()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
+</script>
+</body>
+</html>
