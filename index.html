@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Im_Brick</title>
 <meta property="og:title" content="브릭 | 소개 페이지" />
-<meta property="og:description" content="안녕하세요 👋 브릭입니다. Python을 주로 다룹니다." />
+<meta property="og:description" content="안녕하세요 👋 브릭입니다. Python을 주로 다루며 개인 프로젝트와 디스코드 봇을 개발합니다." />
 <meta property="og:image" content="https://example.com/og-image.png" />
 <meta property="og:url" content="https://example.com/" />
 <meta property="og:type" content="website" />
@@ -97,6 +97,92 @@ body.dark .skill-fill span { color:#fff; }
 #theme-toggle-icon:hover { transform:scale(1.2); }
 
 #particles { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; }
+
+@media (max-width: 768px) {
+  .window {
+    width: 90%;
+    margin: 20px auto 60px;
+    border-radius: 12px;
+  }
+
+  .titlebar {
+    height: 36px;
+    padding: 0 8px;
+  }
+
+  .card {
+    padding: 14px 16px;
+    border-radius: 10px;
+  }
+
+  .header-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .header-card h1 {
+    font-size: 1.6rem;
+  }
+
+  .profile {
+    width: 70px;
+    height: 70px;
+    border-width: 2px;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  .skill svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .skill span {
+    font-size: 0.9rem;
+  }
+
+  .project-title {
+    font-size: 0.95rem;
+  }
+
+  .project-detail {
+    font-size: 0.9rem;
+  }
+
+  .cards {
+    padding: 15px;
+    gap: 12px;
+  }
+
+  #theme-toggle-icon {
+    top: 10px;
+    right: 10px;
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .header-card h1 {
+    font-size: 1.3rem;
+  }
+
+  .profile {
+    width: 60px;
+    height: 60px;
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+  }
+
+  .window {
+    margin: 15px auto 50px;
+  }
+}
 </style>
 </head>
 <body>
@@ -244,4 +330,3 @@ window.addEventListener('DOMContentLoaded', ()=>{
 </script>
 </body>
 </html>
-
